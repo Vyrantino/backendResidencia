@@ -18,6 +18,8 @@ import { Moderador } from './moderadores/entities/moderador.entity';
 import { DatosPlantillaModule } from './datos-plantilla/datos-plantilla.module';
 import { DatosPlantilla } from './datos-plantilla/entities/datos-plantilla.entity';
 import { DepartamentosModule } from './departamentos/departamentos.module';
+import { AdministradoresModule } from './administradores/administradores.module';
+import { Administrador } from './administradores/entities/administrador.entity';
  
 
 @Module({
@@ -37,7 +39,8 @@ import { DepartamentosModule } from './departamentos/departamentos.module';
         Plantilla,
         Usuarios,
         Moderador,
-        DatosPlantilla
+        DatosPlantilla,
+        Administrador
       ],
       synchronize: true,
     }),
@@ -48,7 +51,8 @@ import { DepartamentosModule } from './departamentos/departamentos.module';
     DatosUsuarioModule, 
     ModeradoresModule, 
     DatosPlantillaModule,
-    DepartamentosModule
+    DepartamentosModule,
+    AdministradoresModule
   ],
   controllers: [AppController],
   providers: [AppService],

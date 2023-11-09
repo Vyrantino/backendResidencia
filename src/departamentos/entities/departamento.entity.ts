@@ -1,3 +1,4 @@
+import { Administrador } from "src/administradores/entities/administrador.entity";
 import { Moderador } from "src/moderadores/entities/moderador.entity";
 import { Plantilla } from "src/plantillas/entities/plantilla.entity";
 import { Entity, Column, PrimaryGeneratedColumn , OneToMany, Unique, ManyToMany, JoinTable  } from 'typeorm';
@@ -17,5 +18,8 @@ export class Departamentos {
 
     @ManyToMany( () => Moderador , ( moderadores ) => moderadores.departamento , { cascade: true } )
     moderadores: Moderador[] ; 
+
+    @ManyToMany( () => Administrador , ( administradores ) => administradores.departamento )
+    administradores: Administrador[] ; 
 
 }

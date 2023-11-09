@@ -60,6 +60,10 @@ export class PlantillasService {
     return this.plantillaRepository.findOneBy( { idPlantilla: id } );
   }
 
+  findBy( idDepartamento: number ): Promise < Plantilla[] | null >{
+    return this.plantillaRepository.findBy( { idDepartamento: idDepartamento } ) ;
+  }
+
   update(id: number, updatePlantillaDto: UpdatePlantillaDto) {
     const splitRoute = updatePlantillaDto.Route.split("/") ;
     const popOldName = splitRoute.pop() ;

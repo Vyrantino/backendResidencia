@@ -10,6 +10,11 @@ import * as path from 'path' ;
 export class DocumentosController {
   constructor(private readonly documentosService: DocumentosService) {}
 
+  @Get( 'top' )
+  findTop(){
+    return this.documentosService.findTopPlantillas() ;
+  }
+
   @Post()
   create(@Body() createDocumentoDto: CreateDocumentoDto) {
     return this.documentosService.create(createDocumentoDto);
@@ -26,16 +31,15 @@ export class DocumentosController {
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
     res.setHeader('Content-Disposition', `attachment; filename=output.docx`);
     res.send( buf );
-   
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDocumentoDto: UpdateDocumentoDto) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateDocumentoDto: UpdateDocumentoDto) {
     return this.documentosService.update(+id, updateDocumentoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.documentosService.remove(+id);
   }
 }

@@ -1,4 +1,5 @@
 import { IsAlphanumeric , IsEmail } from "class-validator";
+import { Administrador } from "src/administradores/entities/administrador.entity";
 import { DatosUsuario } from "src/datos-usuario/entities/datos-usuario.entity";
 import { Documentos } from "src/documentos/entities/documento.entity";
 import { Moderador } from "src/moderadores/entities/moderador.entity";
@@ -22,7 +23,7 @@ export class Usuarios {
     @Column('varchar')
     Password: string ;
 
-    @Column('varchar' , { nullable: true })
+    @Column('varchar' , { default: 'Usuario' })
     Role: string ; 
 
     @OneToMany( () => DatosUsuario , ( datoUsuario ) => datoUsuario.usuario , { cascade: true } )
@@ -33,6 +34,9 @@ export class Usuarios {
 
     @ManyToMany( () => Moderador , ( moderadores ) => moderadores.usuario , { cascade: true } )
     moderadores: Moderador[] ;
+
+    @ManyToMany( () => Administrador , ( administradores ) => administradores.usuario , { cascade: true } )
+    administradores: Administrador[] ;
 
     
 }

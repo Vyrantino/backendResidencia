@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { DatosPlantillaService } from './datos-plantilla.service';
 import { CreateDatosPlantillaDto } from './dto/create-datos-plantilla.dto';
 import { UpdateDatosPlantillaDto } from './dto/update-datos-plantilla.dto';
@@ -17,18 +17,23 @@ export class DatosPlantillaController {
     return this.datosPlantillaService.findAll();
   }
 
+  @Get('plantilla/:idPlantilla')
+  findBy( @Param( 'idPlantilla' , ParseIntPipe ) idPlantilla: number ){
+    return this.datosPlantillaService.findBy( idPlantilla ) ;
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id' , ParseIntPipe ) id: number) {
     return this.datosPlantillaService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDatosPlantillaDto: UpdateDatosPlantillaDto) {
+  update(@Param('id' , ParseIntPipe ) id: number, @Body() updateDatosPlantillaDto: UpdateDatosPlantillaDto) {
     return this.datosPlantillaService.update(+id, updateDatosPlantillaDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id' , ParseIntPipe ) id: number) {
     return this.datosPlantillaService.remove(+id);
   }
 }

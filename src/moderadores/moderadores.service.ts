@@ -12,6 +12,7 @@ export class ModeradoresService {
     @InjectRepository( Moderador )
     private moderadoresRepository: Repository< Moderador >
   ) {}
+
   create(moderador: CreateModeradoreDto) {
     const newModerador = this.moderadoresRepository.create( moderador ) ;
     return this.moderadoresRepository.save( newModerador );
@@ -21,8 +22,12 @@ export class ModeradoresService {
     return this.moderadoresRepository.find();
   }
 
-  findOne(id: number): Promise< Moderador | null > {
-    return this.moderadoresRepository.findOneBy( { idUsuario: id } );
+  findByDepartamento(idDepartamento: number) {
+    return this.moderadoresRepository.findBy( { idDepartamento: idDepartamento } );
+  }
+
+  findBy( idUsuario: number ): Promise < Moderador[] >{
+    return this.moderadoresRepository.findBy( { idUsuario: idUsuario } ) ;
   }
 
   update(id: number, updateModeradoreDto: UpdateModeradoreDto) {

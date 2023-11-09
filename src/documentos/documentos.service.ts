@@ -8,6 +8,7 @@ import { DatosUsuario } from 'src/datos-usuario/entities/datos-usuario.entity';
 import * as fs from 'fs' ;
 import * as path from 'path' ;
 import { Plantilla } from 'src/plantillas/entities/plantilla.entity';
+import { Departamentos } from 'src/departamentos/entities/departamento.entity';
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 
@@ -21,6 +22,8 @@ export class DocumentosService {
     private datosUsuarioRepository: Repository< DatosUsuario >,
     @InjectRepository( Plantilla )
     private plantillaRepository: Repository< Plantilla >,
+    @InjectRepository( Departamentos )
+    private departamentosRepository: Repository< Departamentos >,
  
   ){}
 
@@ -60,8 +63,18 @@ export class DocumentosService {
     return this.documentosRepository.save( newDocumento );
   }
 
-  findAll(): Promise< Documentos[] > {
-    return this.documentosRepository.find(  );
+  async findAll(): Promise< Documentos[] > {
+    try {
+      const documentos = await this.documentosRepository.find({
+        relations: ['plantilla' , 'plantilla.departamento'],
+      });
+  
+      return documentos;
+    }
+    catch( error ){
+      console.error('Ocurrió un error: ' + error);
+      throw new Error('No se pudo obtener la lista de documentos.');
+    }
   }
 
   async findOne(id: number): Promise < Documentos | null > {
@@ -108,4 +121,16 @@ export class DocumentosService {
   remove(id: number) {
     return this.documentosRepository.delete( id );
   }
+
+  async findTopPlantillas(  ): Promise < Documentos[] | null >{
+    const topPlantillas = await this.documentosRepository
+      .createQueryBuilder()
+      .select(['COUNT(idPlantilla) AS count', 'idPlantilla'])
+      .groupBy('idPlantilla')
+      .orderBy('count', 'DESC')
+      .limit(5) // Obtener las top 5 plantillas
+      .getRawMany();
+    return topPlantillas ;
+  }
+
 }

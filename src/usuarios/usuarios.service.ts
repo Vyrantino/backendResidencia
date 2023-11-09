@@ -36,7 +36,7 @@ export class UsuariosService {
   }
 
   findAll(): Promise < Usuarios[] > {
-    return this.usuariosRepository.find();
+    return this.usuariosRepository.find( { where: { Role: 'Usuario' } } );
   }
 
   findOne(id: number): Promise< Usuarios | null > {
