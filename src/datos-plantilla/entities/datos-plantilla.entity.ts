@@ -1,8 +1,9 @@
 import { Datos } from "src/datos/entities/dato.entity";
 import { Plantilla } from "src/plantillas/entities/plantilla.entity";
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
+@Index( [ 'idDato' , 'idPlantilla' ] , { unique: true } )
 export class DatosPlantilla {
 
     @PrimaryGeneratedColumn()

@@ -3,7 +3,9 @@ import { CreateDatosPlantillaDto } from './dto/create-datos-plantilla.dto';
 import { UpdateDatosPlantillaDto } from './dto/update-datos-plantilla.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DatosPlantilla } from './entities/datos-plantilla.entity';
-import { DataSource, Repository } from 'typeorm';
+import { And, DataSource, Repository } from 'typeorm';
+import { DatosUsuario } from 'src/datos-usuario/entities/datos-usuario.entity';
+import { on } from 'events';
 
 @Injectable()
 export class DatosPlantillaService {
@@ -13,20 +15,23 @@ export class DatosPlantillaService {
     private dataSource: DataSource,
   ){}
 
-  async create(datoPlantilla: CreateDatosPlantillaDto) { //Crear datos como transaccion nomas por si las moscas
-    const queryRunner = this.dataSource.createQueryRunner() ;
-    await queryRunner.connect() ;
-    await queryRunner.startTransaction() ;
-    try{
-      await queryRunner.manager.save( datoPlantilla ) ;
-    } 
-    catch( error ){
-      await queryRunner.rollbackTransaction() ;
-    }
-    finally{
-      await queryRunner.release() ;
+  async create(datoPlantilla: CreateDatosPlantillaDto) {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const newDatoPlantilla = this.datosPlantillaRepository.create(datoPlantilla);
+      await this.datosPlantillaRepository.save(newDatoPlantilla);
+      await queryRunner.commitTransaction();
+      return { success: true, data: newDatoPlantilla };
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      return { success: false, error: error.message };
+    } finally {
+      await queryRunner.release();
     }
   }
+  
 
   findBy( idPlantilla: number ): Promise< DatosPlantilla[] >{
     return this.datosPlantillaRepository.findBy( { idPlantilla: idPlantilla } ) ; //Filtrar los datos plantilla por plantilla
@@ -34,6 +39,24 @@ export class DatosPlantillaService {
 
   findAll(): Promise< DatosPlantilla[] > {
     return this.datosPlantillaRepository.find() ; //Puede que no se use
+  }
+
+  async findNeededData( idPlantilla: number , idUsuario: number ){
+    try{
+      const neededData = await this.dataSource
+        .createQueryBuilder()
+        .select()
+        .from( DatosPlantilla , "DatosPlantilla"  )
+        .leftJoin( DatosUsuario , "DatosUsuario" , 
+          "DatosUsuario.dato = DatosPlantilla.idDato " +
+          "and DatosUsuario.idUsuario = :idUsuario" , { idUsuario } )
+        .where( "DatosPlantilla.idPlantilla = :idPlantilla and DatosUsuario.contenido IS NULL" , { idPlantilla } )
+        .getRawMany() ; 
+        return neededData ; 
+    }
+    catch( error ){
+      console.error( 'no se pudo realizar la consulta de los datos necesitados ' + error ) ;
+    }
   }
 
   findOne(id: number): Promise< DatosPlantilla | null > {

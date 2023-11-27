@@ -2,14 +2,15 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from 
 import { AdministradoresService } from './administradores.service';
 import { CreateAdministradoreDto } from './dto/create-administradore.dto';
 import { UpdateAdministradoreDto } from './dto/update-administradore.dto';
+import { UpdateUsuarioDto } from 'src/usuarios/dto/update-usuario.dto';
 
 @Controller('administradores')
 export class AdministradoresController {
   constructor(private readonly administradoresService: AdministradoresService) {}
 
   @Post()
-  create(@Body() createAdministradoreDto: CreateAdministradoreDto) {
-    return this.administradoresService.create(createAdministradoreDto);
+  create(@Body() createAdministradoreDto: CreateAdministradoreDto , role: UpdateUsuarioDto ) {
+    return this.administradoresService.create(createAdministradoreDto , role );
   }
 
   @Get()
@@ -17,9 +18,14 @@ export class AdministradoresController {
     return this.administradoresService.findAll();
   }
 
-  @Get( 'departamentos/:idUsuario' )
-  findDepartamentos( @Param( 'idUsuario' , ParseIntPipe ) idUsuario: number  ){
-    return this.administradoresService.findDepartamentos( idUsuario ) ;
+  @Get( 'user-departamentos/:idUsuario' )
+  findUserDepartamentos( @Param( 'idUsuario' , ParseIntPipe ) idUsuario: number  ){
+    return this.administradoresService.findUserDepartamentos( idUsuario ) ;
+  }
+
+  @Get( 'departament-administrators/:idDepartamento' )
+  findDepartamentAdministrators( @Param( 'idDepartamento' , ParseIntPipe ) idDepartamento: number  ){
+    return this.administradoresService.findDepartamentAdministrators( idDepartamento ) ;
   }
 
   @Get(':id')

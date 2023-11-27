@@ -20,7 +20,7 @@ export class UsuariosService {
     const plainToHash = await hash( Password , 10 ) ; 
     usuario = { ...usuario , Password: plainToHash } ;
     const newUsuario = this.usuariosRepository.create( usuario ) ; 
-    return this.usuariosRepository.save( newUsuario );
+    return this.usuariosRepository.save( newUsuario ) ;
   }
 
   async login( usuario: CreateUsuarioDto ){
@@ -31,8 +31,14 @@ export class UsuariosService {
     if( !checkPassword ) throw new HttpException( 'Contraseña Incorrecta ' , 403 ) ;
     const payload = { idUsuario: findUser.idUsuario , username: findUser.Username } ; 
     const token = this.jwtServiice.sign( payload );
-    const data = { user: findUser , token: token }
-    return data.token ;  
+    const data = { 
+      idUsuario: findUser.idUsuario, 
+      Username: findUser.Username , 
+      Role: findUser.Role , 
+      token: token 
+    }
+
+    return data ;  
   }
 
   findAll(): Promise < Usuarios[] > {

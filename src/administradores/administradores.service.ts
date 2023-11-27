@@ -3,24 +3,45 @@ import { CreateAdministradoreDto } from './dto/create-administradore.dto';
 import { UpdateAdministradoreDto } from './dto/update-administradore.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Administrador } from './entities/administrador.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { Usuarios } from 'src/usuarios/entities/usuario.entity';
+import { UpdateUsuarioDto } from 'src/usuarios/dto/update-usuario.dto';
 
 @Injectable()
 export class AdministradoresService {
   constructor(
     @InjectRepository( Administrador )
-    private administradorRepository: Repository < Administrador > 
+    private administradorRepository: Repository < Administrador >,
+    @InjectRepository( Usuarios )
+    private usuarioRepository: Repository < Usuarios >,
+    private dataSource: DataSource , 
   ){}
 
 
-  create(administrador: CreateAdministradoreDto) {
-    try{
-      const newAdmin = this.administradorRepository.create( administrador ) ;
-      return this.administradorRepository.save( newAdmin ) ;
+  // create(administrador: CreateAdministradoreDto) {
+  //   try{
+  //     const newAdmin = this.administradorRepository.create( administrador ) ;
+  //     return this.administradorRepository.save( newAdmin ) ;
+  //   }
+  //   catch( error ){
+  //     console.error( 'No se pudo crear el nuevo administrador ' + error ) ;
+  //   };
+  // }
+
+  async create( administrador: CreateAdministradoreDto , usuario: UpdateUsuarioDto ){
+    const queryRunner =  this.dataSource.createQueryRunner() ;
+    await queryRunner.connect() ;
+    await queryRunner.startTransaction() ;
+    try {
+       await this.usuarioRepository.update( { idUsuario: administrador.idUsuario } , usuario  ) ;
+       const newAdmin = this.administradorRepository.create( administrador ) ;
+       await this.administradorRepository.save( newAdmin ) ; 
+       await queryRunner.commitTransaction()
+    } catch (err) {
+        await queryRunner.rollbackTransaction()
+    } finally {
+        await queryRunner.release()
     }
-    catch( error ){
-      console.error( 'No se pudo crear el nuevo administrador ' + error ) ;
-    };
   }
 
   findAll() {
@@ -41,9 +62,18 @@ export class AdministradoresService {
     };
   }
 
-  findDepartamentos( idUsuario: number ){
+  findUserDepartamentos( idUsuario: number ){
     try{
       return this.administradorRepository.find( { relations: [ 'departamento' ] , where: { idUsuario: idUsuario } } ) ;
+    }
+    catch( error ){
+      console.error( 'No se pudo consultar los departamentos del administrador ' + error ) ;
+    } ;
+  }
+
+  findDepartamentAdministrators( idDepartamento: number ){
+    try{
+      return this.administradorRepository.find( { relations: [ 'usuario' ] , where: { idDepartamento: idDepartamento } } ) ;
     }
     catch( error ){
       console.error( 'No se pudo consultar los departamentos del administrador ' + error ) ;

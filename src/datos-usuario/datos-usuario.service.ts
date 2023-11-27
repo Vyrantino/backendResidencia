@@ -43,8 +43,6 @@ export class DatosUsuarioService {
     .select(['usuarios.username', 'datos.Nombre', 'datos_usuario.contenido'])
     .where('datos_usuario.idUsuario = :idUsuario', { idUsuario: idUsuario })
     .getRawMany();
-
-   
     return datosUsuarios ; 
   }
 

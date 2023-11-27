@@ -22,6 +22,11 @@ export class DatosPlantillaController {
     return this.datosPlantillaService.findBy( idPlantilla ) ;
   }
 
+  @Get('plantilla/:idPlantilla/usuario/:idUsuario')
+  findNeededData( @Param( 'idPlantilla' , ParseIntPipe ) idPlantilla: number , @Param( 'idUsuario' , ParseIntPipe ) idUsuario: number ){
+    return this.datosPlantillaService.findNeededData( idPlantilla , idUsuario ) ;
+  }
+
   @Get(':id')
   findOne(@Param('id' , ParseIntPipe ) id: number) {
     return this.datosPlantillaService.findOne(+id);

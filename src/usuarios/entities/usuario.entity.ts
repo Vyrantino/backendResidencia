@@ -6,7 +6,8 @@ import { Moderador } from "src/moderadores/entities/moderador.entity";
 import { Entity , Column , PrimaryGeneratedColumn , OneToMany , ManyToMany, Unique } from "typeorm";
 
 @Entity()
-@Unique(['Email']) 
+@Unique(['Email'] ) 
+@Unique([ 'Username' ])
 export class Usuarios {
 
     @PrimaryGeneratedColumn()
