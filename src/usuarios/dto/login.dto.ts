@@ -1,8 +1,13 @@
-import { IsEmail , MaxLength , MinLength } from "class-validator";
+import { IsAlphanumeric, IsEmail , IsOptional, MaxLength , MinLength } from "class-validator";
 
-export class AuthDto{
+export class LoginDto{
     @IsEmail()
-    Email: string ; 
+    @IsOptional()
+    Email?: string ; 
+
+    @IsAlphanumeric()
+    @IsOptional()
+    Username?: string ;
 
     @MinLength( 4 )
     @MaxLength( 16)
