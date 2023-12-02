@@ -40,7 +40,7 @@ export class DatosUsuarioService {
     .createQueryBuilder('datos_usuario')
     .innerJoin('datos_usuario.usuario', 'usuarios')
     .innerJoin('datos_usuario.dato', 'datos')
-    .select(['usuarios.username', 'datos.Nombre', 'datos_usuario.contenido'])
+    .select(['usuarios.username', 'datos.Nombre', 'datos_usuario.contenido' , 'datos.idDato' , 'datos_usuario.idDatosUsuario'])
     .where('datos_usuario.idUsuario = :idUsuario', { idUsuario: idUsuario })
     .getRawMany();
     return datosUsuarios ; 

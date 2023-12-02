@@ -50,12 +50,29 @@ export class UsuariosService {
     return this.usuariosRepository.find( { where: { Role: 'Usuario' } } );
   }
 
+  findAllMaster(): Promise < Usuarios[] > {
+    return this.usuariosRepository.find( );
+  }
+
   findOne(id: number): Promise< Usuarios | null > {
     return this.usuariosRepository.findOneBy( { idUsuario: id } );
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosRepository.update( { idUsuario: id } , updateUsuarioDto );
+  async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
+    try{
+      if( updateUsuarioDto.Password ){
+        const { Password } = updateUsuarioDto ; 
+        const plainToHash = await hash( Password , 10 ) ; 
+        updateUsuarioDto = { ...updateUsuarioDto , Password: plainToHash } ;
+        return this.usuariosRepository.update( { idUsuario: id } , updateUsuarioDto );
+      }
+      else{
+        return this.usuariosRepository.update( { idUsuario: id } , updateUsuarioDto );
+      }
+    }
+    catch( error ){
+      console.error( error );
+    }
   }
 
   remove(id: number) {

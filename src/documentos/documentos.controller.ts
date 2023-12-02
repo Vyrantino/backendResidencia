@@ -32,6 +32,10 @@ export class DocumentosController {
     res.setHeader('Content-Disposition', `attachment; filename=output.docx`);
     res.send( buf );
   }
+  @Get('idUsuario/:id')
+  async getUserDocumentos( @Param('id' , ParseIntPipe ) idUsuario: number ) {
+    return this.documentosService.findUserDocumentos(  idUsuario );
+  }
 
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateDocumentoDto: UpdateDocumentoDto) {

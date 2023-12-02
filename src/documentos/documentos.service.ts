@@ -13,6 +13,7 @@ const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 
 
+
 @Injectable()
 export class DocumentosService {
   constructor(
@@ -114,6 +115,8 @@ export class DocumentosService {
     }
   }
 
+
+
   update(id: number, updateDocumentoDto: UpdateDocumentoDto) {
     return this.documentosRepository.update( { idDocumento: id } , updateDocumentoDto );
   }
@@ -122,11 +125,23 @@ export class DocumentosService {
     return this.documentosRepository.delete( id );
   }
 
+  async findUserDocumentos( idUsuario: number ){
+    const documentos = await this.documentosRepository
+      .createQueryBuilder('documentos')
+      .leftJoin( 'documentos.plantilla' , 'plantilla' , 'plantilla.idPlantilla = documentos.idPlantilla' )
+      .leftJoin( 'plantilla.departamento' , 'departamento' , 'departamento.idDepartamento = plantilla.idDepartamento ' )
+      .select([ 'documentos.idDocumento','documentos.Nombre' , 'documentos.FechaModificacion' , 'departamento.Nombre' , 'plantilla.Nombre' ])
+      .where('documentos.idUsuario = :idUsuario' , { idUsuario } )
+      .getRawMany() ;
+      return documentos ; 
+  }
+
   async findTopPlantillas(  ): Promise < Documentos[] | null >{
     const topPlantillas = await this.documentosRepository
-      .createQueryBuilder()
-      .select(['COUNT(idPlantilla) AS count', 'idPlantilla'])
-      .groupBy('idPlantilla')
+      .createQueryBuilder('documentos')
+      .leftJoin('documentos.plantilla' , 'plantilla' , 'plantilla.idPlantilla = documentos.idPlantilla')
+      .select(['COUNT(documentos.idPlantilla) AS count', 'documentos.idPlantilla' , 'plantilla.Nombre' ])
+      .groupBy('documentos.idPlantilla')
       .orderBy('count', 'DESC')
       .limit(5) // Obtener las top 5 plantillas
       .getRawMany();

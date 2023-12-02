@@ -27,7 +27,6 @@ export class DatosUsuarioController {
     return this.datosUsuarioService.findDatosUsuario( idUsuario ) ;
   }
 
-  
   @Get( 'datosFaltantes/:idUsuario' )
   getEmptyData( @Param('idUsuario' , ParseIntPipe ) idUsuario: number ){
     return this.datosUsuarioService.findEmptyData( idUsuario ) ;

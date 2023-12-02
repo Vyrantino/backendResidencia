@@ -24,6 +24,11 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
+  @Get('master')
+  findAllMaster() {
+    return this.usuariosService.findAllMaster();
+  }
+
   @Get(':id')
   findOne(@Param('id' , ParseIntPipe ) id: number) {
     return this.usuariosService.findOne(+id);
@@ -31,7 +36,7 @@ export class UsuariosController {
 
   @Patch(':id')
   update(@Param('id' , ParseIntPipe ) id: number, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuariosService.update(+id, updateUsuarioDto);
+    return this.usuariosService.update(id, updateUsuarioDto);
   }
 
   @Delete(':id')
