@@ -20,7 +20,7 @@ import { DatosPlantilla } from './datos-plantilla/entities/datos-plantilla.entit
 import { DepartamentosModule } from './departamentos/departamentos.module';
 import { AdministradoresModule } from './administradores/administradores.module';
 import { Administrador } from './administradores/entities/administrador.entity';
- 
+import { HttpModule } from '@nestjs/axios/dist/http.module'; 
 
 @Module({
   imports: [
@@ -40,7 +40,8 @@ import { Administrador } from './administradores/entities/administrador.entity';
         Usuarios,
         Moderador,
         DatosPlantilla,
-        Administrador
+        Administrador,
+        HttpModule
       ],
       synchronize: true,
     }),

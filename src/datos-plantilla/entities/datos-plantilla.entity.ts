@@ -19,7 +19,7 @@ export class DatosPlantilla {
     @JoinColumn( { name: "idPlantilla" } )
     plantilla: Plantilla ; 
 
-    @ManyToOne( () => Datos , ( datos ) => datos.datoPlantilla ) 
+    @ManyToOne( () => Datos , ( datos ) => datos.datoPlantilla  ) 
     @JoinColumn( { name: "idDato" } )
     datos: Datos[] ; 
 

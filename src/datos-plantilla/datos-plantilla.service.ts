@@ -6,6 +6,7 @@ import { DatosPlantilla } from './entities/datos-plantilla.entity';
 import { And, DataSource, Repository } from 'typeorm';
 import { DatosUsuario } from 'src/datos-usuario/entities/datos-usuario.entity';
 import { on } from 'events';
+import { Datos } from 'src/datos/entities/dato.entity';
 
 @Injectable()
 export class DatosPlantillaService {
@@ -45,11 +46,13 @@ export class DatosPlantillaService {
     try{
       const neededData = await this.dataSource
         .createQueryBuilder()
-        .select()
         .from( DatosPlantilla , "DatosPlantilla"  )
+        .leftJoin( 'DatosPlantilla.plantilla' , 'plantilla' , 'plantilla.idPlantilla = :idPlantilla' , { idPlantilla } )
         .leftJoin( DatosUsuario , "DatosUsuario" , 
           "DatosUsuario.dato = DatosPlantilla.idDato " +
           "and DatosUsuario.idUsuario = :idUsuario" , { idUsuario } )
+        .leftJoin( Datos , 'Datos' , 'Datos.idDato = DatosPlantilla.idDato' )
+        .select(['DatosPlantilla.idDato', 'Datos.Nombre' , 'DatosPlantilla.idPlantilla' , 'plantilla.Nombre' ])
         .where( "DatosPlantilla.idPlantilla = :idPlantilla and DatosUsuario.contenido IS NULL" , { idPlantilla } )
         .getRawMany() ; 
         return neededData ; 

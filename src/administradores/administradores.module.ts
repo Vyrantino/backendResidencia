@@ -4,9 +4,10 @@ import { AdministradoresController } from './administradores.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Administrador } from './entities/administrador.entity';
 import { Usuarios } from 'src/usuarios/entities/usuario.entity';
+import { HttpModule } from '@nestjs/axios';
 
 @Module({
-  imports: [ TypeOrmModule.forFeature([ Administrador , Usuarios ]) ] ,
+  imports: [ HttpModule , TypeOrmModule.forFeature([ Administrador , Usuarios ])]  ,
   controllers: [AdministradoresController],
   providers: [AdministradoresService],
 })

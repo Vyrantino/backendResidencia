@@ -12,8 +12,6 @@ import { Departamentos } from 'src/departamentos/entities/departamento.entity';
 const PizZip = require("pizzip");
 const Docxtemplater = require("docxtemplater");
 
-
-
 @Injectable()
 export class DocumentosService {
   constructor(
@@ -115,8 +113,6 @@ export class DocumentosService {
     }
   }
 
-
-
   update(id: number, updateDocumentoDto: UpdateDocumentoDto) {
     return this.documentosRepository.update( { idDocumento: id } , updateDocumentoDto );
   }
@@ -136,7 +132,7 @@ export class DocumentosService {
       return documentos ; 
   }
 
-  async findTopPlantillas(  ): Promise < Documentos[] | null >{
+async findTopPlantillas(  ): Promise < Documentos[] | null >{
     const topPlantillas = await this.documentosRepository
       .createQueryBuilder('documentos')
       .leftJoin('documentos.plantilla' , 'plantilla' , 'plantilla.idPlantilla = documentos.idPlantilla')
@@ -147,5 +143,4 @@ export class DocumentosService {
       .getRawMany();
     return topPlantillas ;
   }
-
 }
