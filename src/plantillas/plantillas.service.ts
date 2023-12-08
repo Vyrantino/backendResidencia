@@ -57,11 +57,20 @@ export class PlantillasService {
   }
 
   findOne(id: number): Promise < Plantilla | null > {
-    return this.plantillaRepository.findOneBy( { idPlantilla: id } );
+    return this.plantillaRepository.findOne(  { select: { idPlantilla: true , Nombre: true } , where: { idPlantilla: id } }  );
   }
 
   findBy( idDepartamento: number ): Promise < Plantilla[] | null >{
-    return this.plantillaRepository.findBy( { idDepartamento: idDepartamento } ) ;
+    return this.plantillaRepository.find( { 
+      select: { 
+        idPlantilla: true ,  
+        idDepartamento: true , 
+        Nombre: true  
+      } , 
+      where: {
+        idDepartamento: idDepartamento 
+      }
+    } ) ;
   }
 
   update(id: number, updatePlantillaDto: UpdatePlantillaDto) {

@@ -54,12 +54,13 @@ export class DocumentosService {
     });
     // buf is a nodejs Buffer, you can either write it to a
     // file or res.send it with express for example.
-    fs.writeFileSync(path.resolve("./DirectorioDepartamentos", "output.docx"), buf);
     const currentTime = new Date() ;
     const formatedCurrentTime = currentTime.toISOString() ;
     documento.FechaModificacion = formatedCurrentTime ; 
     const newDocumento = this.documentosRepository.create( documento ) ; 
-    return this.documentosRepository.save( newDocumento );
+    this.documentosRepository.save( newDocumento );
+    fs.writeFileSync(path.resolve("./DirectorioDepartamentos", "output.docx"), buf);
+    return buf ; 
   }
 
   async findAll(): Promise< Documentos[] > {
@@ -71,7 +72,6 @@ export class DocumentosService {
       return documentos;
     }
     catch( error ){
-      console.error('Ocurrió un error: ' + error);
       throw new Error('No se pudo obtener la lista de documentos.');
     }
   }

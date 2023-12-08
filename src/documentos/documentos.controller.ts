@@ -16,8 +16,11 @@ export class DocumentosController {
   }
 
   @Post()
-  create(@Body() createDocumentoDto: CreateDocumentoDto) {
-    return this.documentosService.create(createDocumentoDto);
+  async create(@Body() createDocumentoDto: CreateDocumentoDto , @Res() res: Response ) {
+    const buf = await this.documentosService.create(createDocumentoDto);
+    res.setHeader( 'Content-Type' , 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ) ; 
+    res.setHeader( 'Content-Disposition' , `attachment; filename=${ createDocumentoDto.Nombre }` ) ;
+    res.send( buf );  
   }
 
   @Get()
@@ -32,6 +35,7 @@ export class DocumentosController {
     res.setHeader('Content-Disposition', `attachment; filename=output.docx`);
     res.send( buf );
   }
+
   @Get('idUsuario/:id')
   async getUserDocumentos( @Param('id' , ParseIntPipe ) idUsuario: number ) {
     return this.documentosService.findUserDocumentos(  idUsuario );
